@@ -84,14 +84,22 @@ const Appointment = () => {
         // Agregar la nueva cita al estado
         setAppointments((prev) => [...prev, newAppointment]);
         setIsSubmitting(false);
-        setIsSubmitted(true);
-
+        
+        // Reiniciar los datos del formulario pero mantener una copia para mostrarla
+        const submittedData = { ...formData };
+        handleReset();
+        
         // Mostrar toast de éxito
         setToast({
           show: true,
           type: "success",
           message: "¡Cita agendada con éxito! Recibirás un correo de confirmación.",
+          position: "bottom"
         });
+        
+        // Establecer los datos para la pantalla de éxito
+        setFormData(submittedData);
+        setIsSubmitted(true);
       }, 1500);
     } else {
       // Mostrar toast de error
@@ -99,6 +107,7 @@ const Appointment = () => {
         show: true,
         type: "error",
         message: "Por favor, completa todos los campos requeridos.",
+        position: "bottom"
       });
     }
   };
@@ -115,25 +124,36 @@ const Appointment = () => {
     });
     setIsSubmitted(false);
     setErrors({});
-    setToast({
-      show: false,
-      type: "info",
-      message: "",
-    });
   };
 
   const handleViewCalendar = () => {
     setActiveTab("calendar");
     setIsSubmitted(false);
+    setToast({ ...toast, show: false });
+  };
+
+  const handleCloseToast = () => {
+    setToast({ ...toast, show: false });
   };
 
   if (isSubmitted) {
     return (
-      <AppointmentSuccess 
-        formData={formData} 
-        onReset={handleReset} 
-        onViewCalendar={handleViewCalendar} 
-      />
+      <>
+        <AppointmentSuccess 
+          formData={formData} 
+          onReset={handleReset} 
+          onViewCalendar={handleViewCalendar} 
+        />
+        {toast.show && (
+          <FeedbackToast
+            type={toast.type}
+            message={toast.message}
+            show={toast.show}
+            position={toast.position}
+            onClose={handleCloseToast}
+          />
+        )}
+      </>
     );
   }
 
@@ -188,7 +208,8 @@ const Appointment = () => {
           type={toast.type}
           message={toast.message}
           show={toast.show}
-          onClose={() => setToast({ ...toast, show: false })}
+          position={toast.position}
+          onClose={handleCloseToast}
         />
       )}
     </div>
