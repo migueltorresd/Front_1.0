@@ -8,6 +8,5 @@ export const ROUTES = {
   LOGIN: "/auth/login",
   TERMS: "/terms",
   PRIVACY: "/privacy",
-  COOKIES: "/cookies",
   ACCESSIBILITY: "/accessibility",
 };

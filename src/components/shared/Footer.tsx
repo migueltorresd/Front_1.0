@@ -127,14 +127,6 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  to={ROUTES.COOKIES}
-                  className="text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
-                >
-                  Política de cookies
-                </Link>
-              </li>
-              <li>
-                <Link
                   to={ROUTES.ACCESSIBILITY}
                   className="text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
                 >
