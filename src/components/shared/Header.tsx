@@ -13,6 +13,7 @@ const Header = () => {
   };
 
   const links = [
+    { name: "Inicio", path: ROUTES.HOME },
     { name: "Chatbot", path: ROUTES.CHATBOT },
     { name: "Agendar Cita", path: ROUTES.APPOINTMENTS },
     { name: "Recursos", path: ROUTES.RESOURCES },
