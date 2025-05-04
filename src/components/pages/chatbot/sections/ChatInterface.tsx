@@ -22,10 +22,19 @@ const ChatInterface = ({
 }: ChatInterfaceProps) => {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Scroll al final de los mensajes cuando se añade uno nuevo
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      const scrollContainer = chatContainerRef.current;
+      if (scrollContainer) {
+        const timer = setTimeout(() => {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        }, 50);
+        return () => clearTimeout(timer);
+      }
+    }
   }, [messages]);
 
   const handleSendMessage = () => {
@@ -100,7 +109,10 @@ const ChatInterface = ({
         </div>
 
         {/* Chat Messages */}
-        <div className="h-[450px] overflow-y-auto p-4 space-y-4">
+        <div
+          ref={chatContainerRef}
+          className="h-[450px] overflow-y-auto p-4 space-y-4"
+        >
           {messages.map((message) => (
             <div
               key={message.id}
@@ -130,7 +142,12 @@ const ChatInterface = ({
                   }`}
                 >
                   {message.isLoading ? (
-                    <LoadingSpinner size="sm" className="py-1 px-4" />
+                    <LoadingSpinner 
+                      variant="dots" 
+                      size="sm" 
+                      color={message.sender === "user" ? "white" : "primary"}
+                      className="mx-auto py-2" 
+                    />
                   ) : (
                     <>
                       <p>{message.text}</p>
@@ -171,7 +188,7 @@ const ChatInterface = ({
             disabled={isTyping || !input.trim()}
           >
             {isTyping ? (
-              <LoadingSpinner size="sm" />
+              <LoadingSpinner size="sm" color="white" variant="dots" />
             ) : (
               <FaPaperPlane className="h-4 w-4" />
             )}
