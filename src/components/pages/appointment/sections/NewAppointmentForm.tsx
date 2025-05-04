@@ -194,21 +194,28 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({
                       )}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-orange-100/50 dark:border-orange-900/30 rounded-lg">
-                    <Calendar
-                      mode="single"
-                      selected={formData.date}
-                      onSelect={handleDateChange}
-                      initialFocus
-                      locale={es}
-                      className="rounded-lg"
-                      disabled={(date) =>
-                        date < new Date(new Date().setHours(0, 0, 0, 0)) ||
-                        date.getDay() === 0 ||
-                        date.getDay() === 6
-                      }
-                    />
-                  </PopoverContent>
+                    <PopoverContent className="w-auto p-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-orange-100/50 dark:border-orange-900/30 rounded-lg">
+                      <Calendar
+                        mode="single"
+                        selected={formData.date}
+                        onSelect={handleDateChange}
+                        locale={es}
+                        className="rounded-lg"
+                        disabled={(date) =>
+                          date < new Date(new Date().setHours(0, 0, 0, 0)) ||
+                          date.getDay() === 0 ||
+                          date.getDay() === 6
+                        }
+                        classNames={{
+                          month_caption: "flex items-center justify-between px-4 py-2",
+                          caption: "flex items-center justify-center pt-1 relative",
+                          caption_label: "text-sm font-medium text-orange-700 dark:text-orange-300",
+                          nav: "absolute top-3 right-1 flex gap-2 items-center space-x-1 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/30 rounded-lg p-1.5 shadow-sm",
+                          nav_button: "h-7 w-7 bg-white/70 dark:bg-gray-800/50 hover:bg-orange-200 dark:hover:bg-orange-700/40 rounded-md flex items-center justify-center transition-colors duration-200 border border-orange-100/50 dark:border-orange-800/30 cursor-pointer",
+                          disabled: "opacity-50 cursor-not-allowed",
+                        }}
+                      />
+                    </PopoverContent>
                 </Popover>
                 {errors.date && <p className="text-sm text-red-500">{errors.date}</p>}
               </div>
