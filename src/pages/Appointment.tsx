@@ -33,22 +33,9 @@ const Appointment = () => {
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof FormData, string>> = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = "El nombre es requerido";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "El correo electrónico es requerido";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "El correo electrónico no es válido";
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = "El teléfono es requerido";
-    }
-
+    // Para recordatorios personales, solo necesitamos el tipo de cita, fecha, hora y opcionalmente notas
     if (!formData.specialistType) {
-      newErrors.specialistType = "Selecciona un tipo de especialista";
+      newErrors.specialistType = "Selecciona un tipo de cita médica";
     }
 
     if (!formData.date) {
@@ -69,7 +56,7 @@ const Appointment = () => {
     if (validateForm()) {
       setIsSubmitting(true);
 
-      // Crear una nueva cita
+      // Crear un nuevo recordatorio de cita
       const newAppointment: AppointmentType = {
         id: `${appointments.length + 1}`,
         date: formData.date!,
@@ -81,7 +68,7 @@ const Appointment = () => {
 
       // Simular envío al servidor
       setTimeout(() => {
-        // Agregar la nueva cita al estado
+        // Agregar el nuevo recordatorio al estado
         setAppointments((prev) => [...prev, newAppointment]);
         setIsSubmitting(false);
         
@@ -93,7 +80,7 @@ const Appointment = () => {
         setToast({
           show: true,
           type: "success",
-          message: "¡Cita agendada con éxito! Recibirás un correo de confirmación.",
+          message: "¡Recordatorio de cita guardado con éxito! Te lo recordaremos antes de la fecha.",
           position: "bottom"
         });
         
@@ -162,8 +149,8 @@ const Appointment = () => {
       <Breadcrumb />
 
       <SectionHeader
-        title="Gestión de Citas"
-        description="Programa consultas con especialistas y gestiona tu calendario personal de manera sencilla"
+        title="Mis Recordatorios de Citas"
+        description="Guarda recordatorios de tus citas médicas y tratamientos para no olvidarlos"
       />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
@@ -178,7 +165,7 @@ const Appointment = () => {
             value="new"
             className="rounded-full data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-orange-600 dark:data-[state=active]:text-orange-400 data-[state=active]:shadow-sm"
           >
-            Nueva Cita
+            Nuevo Recordatorio
           </TabsTrigger>
         </TabsList>
 
