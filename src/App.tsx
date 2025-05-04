@@ -8,6 +8,7 @@ import Resources from "@/pages/Resources";
 import Map from "@/pages/Map";
 import About from "@/pages/About";
 import ChatBot from "@/pages/ChatBot";
+import Login from "@/pages/Login";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path={ROUTES.RESOURCES} element={<Resources />} />
           <Route path={ROUTES.MAP} element={<Map />} />
           <Route path={ROUTES.ABOUT} element={<About />} />
+          <Route path={ROUTES.LOGIN} element={<Login />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
