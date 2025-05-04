@@ -13,6 +13,7 @@ type SelectContextType = {
   onValueChange: (value: string) => void;
   open: boolean;
   setOpen: (open: boolean) => void;
+  disabled?: boolean;
 };
 
 const SelectContext = createContext<SelectContextType | undefined>(undefined);
@@ -30,6 +31,7 @@ interface SelectProps {
   value?: string;
   onValueChange: (value: string) => void;
   defaultValue?: string;
+  disabled?: boolean;
 }
 
 const Select = ({
@@ -37,6 +39,7 @@ const Select = ({
   value,
   onValueChange,
   defaultValue,
+  disabled = false,
 }: SelectProps) => {
   const [open, setOpen] = useState(false);
   const [internalValue, setInternalValue] = useState(
@@ -50,9 +53,16 @@ const Select = ({
   }, [value]);
 
   const handleValueChange = (newValue: string) => {
+    if (disabled) return;
+
     setInternalValue(newValue);
     onValueChange(newValue);
     setOpen(false);
+  };
+
+  const handleSetOpen = (isOpen: boolean) => {
+    if (disabled) return;
+    setOpen(isOpen);
   };
 
   return (
@@ -61,7 +71,8 @@ const Select = ({
         value: internalValue,
         onValueChange: handleValueChange,
         open,
-        setOpen,
+        setOpen: handleSetOpen,
+        disabled,
       }}
     >
       {children}
@@ -77,7 +88,7 @@ interface SelectTriggerProps
 
 const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
   ({ className, children, ...props }, ref) => {
-    const { open, setOpen } = useSelectContext();
+    const { open, setOpen, disabled } = useSelectContext();
 
     return (
       <button
@@ -87,11 +98,13 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
           "text-sm ring-offset-white placeholder:text-gray-500",
           "focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500",
           "disabled:cursor-not-allowed disabled:opacity-50",
+          disabled && "opacity-50 cursor-not-allowed",
           className,
         )}
         onClick={() => setOpen(!open)}
         type="button"
         aria-expanded={open}
+        disabled={disabled}
         {...props}
       >
         {children}
@@ -165,19 +178,21 @@ interface SelectItemProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
   ({ className, children, value, ...props }, ref) => {
-    const { value: selectedValue, onValueChange } = useSelectContext();
+    const { value: selectedValue, onValueChange, disabled } = useSelectContext();
     const isSelected = selectedValue === value;
 
     return (
       <div
         ref={ref}
         className={cn(
-          "relative flex cursor-pointer select-none items-center rounded-sm px-3 py-2 text-sm",
+          "relative flex select-none items-center rounded-sm px-3 py-2 text-sm",
           "hover:bg-gray-100 focus:bg-gray-100 focus:outline-none",
           isSelected ? "bg-gray-100 font-medium" : "",
+          disabled ? "opacity-50 cursor-not-allowed pointer-events-none" : "cursor-pointer",
           className,
         )}
-        onClick={() => onValueChange(value)}
+        onClick={() => !disabled && onValueChange(value)}
+        aria-disabled={disabled}
         {...props}
       >
         <span>{children}</span>

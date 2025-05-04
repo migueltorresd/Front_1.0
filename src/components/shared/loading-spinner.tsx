@@ -1,28 +1,45 @@
-import { cn } from "@/lib/utils";
+import React from 'react';
+import { cn } from '@/lib/utils';
 
 interface LoadingSpinnerProps {
-  size?: "xs" | "sm" | "md" | "lg";
+  size?: 'xs' | 'sm' | 'md' | 'lg';
+  color?: 'primary' | 'white';
   className?: string;
 }
 
-export default function LoadingSpinner({
-  size = "md",
-  className,
-}: LoadingSpinnerProps) {
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ 
+  size = 'md', 
+  color = 'primary',
+  className 
+}) => {
+  // Mapear tamaños a clases CSS
   const sizeClasses = {
-    xs: "w-3 h-3 border-[1.5px]",
-    sm: "w-4 h-4 border-2",
-    md: "w-6 h-6 border-2",
-    lg: "w-8 h-8 border-[3px]",
+    xs: 'h-3 w-3 border-[1.5px]',
+    sm: 'h-4 w-4 border-2',
+    md: 'h-6 w-6 border-2',
+    lg: 'h-8 w-8 border-[3px]',
+  };
+
+  // Mapear colores a clases CSS
+  const colorClasses = {
+    primary: 'border-orange-200 border-t-orange-600 dark:border-orange-800 dark:border-t-orange-400',
+    white: 'border-white/30 border-t-white',
   };
 
   return (
-    <div
+    <div 
       className={cn(
-        "animate-spin rounded-full border-t-transparent",
+        'animate-spin rounded-full border-solid',
         sizeClasses[size],
-        className || "border-white",
+        colorClasses[color],
+        className
       )}
-    ></div>
+      role="status"
+      aria-label="Cargando"
+    >
+      <span className="sr-only">Cargando...</span>
+    </div>
   );
-}
+};
+
+export default LoadingSpinner;
