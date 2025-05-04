@@ -1,4 +1,5 @@
 import SectionHeader from "@/components/shared/Section-Header";
+import { staticImages } from "@/constants/static_images";
 
 const Partners = () => {
   const partners = [
@@ -57,7 +58,7 @@ const Partners = () => {
                 className="max-h-20 max-w-full grayscale hover:grayscale-0 transition-all"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = "/src/assets/placeholder_image.svg";
+                  target.src =staticImages.PLACEHOLDER_IMAGE;
                 }}
               />
             </a>

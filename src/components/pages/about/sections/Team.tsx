@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import SectionHeader from "@/components/shared/Section-Header";
 import { FaLinkedin, FaTwitter } from "react-icons/fa";
+import { staticImages } from "@/constants/static_images";
 
 const Team = () => {
   const teamMembers = [
@@ -56,7 +57,7 @@ const Team = () => {
                   className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = "/src/assets/placeholder_user.jpg";
+                    target.src = staticImages.PLACEHOLDER_USER;
                   }}
                 />
               </div>
