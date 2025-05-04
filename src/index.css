@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+main {
+  @apply bg-gradient-to-br from-white to-orange-50/50 min-h-screen w-full;
+}
