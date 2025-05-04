@@ -26,13 +26,15 @@ const Header = () => {
       <Logo />
 
       {/* Botón de menú móvil */}
-      <button
-        className="lg:hidden p-2 hover:bg-orange-100 rounded-full transition-colors"
-        onClick={toggleMenu}
-        aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
-      >
-        {isMenuOpen ? <IoMdClose size={24} /> : <RxHamburgerMenu size={24} />}
-      </button>
+      <div className="lg:hidden flex items-center py-2">
+        <button
+          className="lg:hidden p-2 hover:bg-orange-100 rounded-full transition-colors cursor-pointer"
+          onClick={toggleMenu}
+          aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
+        >
+          {isMenuOpen ? <IoMdClose size={24} /> : <RxHamburgerMenu size={24} />}
+        </button>
+      </div>
 
       {/* Navegación para pantallas medianas y grandes */}
       <div className="hidden lg:block">
