@@ -6,7 +6,7 @@ type FeedbackToastProps = ToastData & {
   onClose: () => void;
 };
 
-const FeedbackToast: React.FC<FeedbackToastProps> = ({ type, message, show, onClose }) => {
+const FeedbackToast: React.FC<FeedbackToastProps> = ({ type, message, show, position = "bottom", onClose }) => {
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {
@@ -38,14 +38,18 @@ const FeedbackToast: React.FC<FeedbackToastProps> = ({ type, message, show, onCl
       break;
   }
   
+  const positionClass = position === "top" 
+    ? "fixed top-6 right-6 z-50 animate-in slide-in-from-right-3"
+    : "fixed bottom-6 right-6 z-50 animate-in slide-in-from-right-3";
+  
   return (
-    <div className="fixed top-6 right-6 z-50 max-w-sm">
-      <div className={`p-4 rounded-xl ${bgClass} border backdrop-blur-sm shadow-md animate-in slide-in-from-top-3`}>
+    <div className={positionClass}>
+      <div className={`p-4 rounded-xl ${bgClass} border backdrop-blur-sm shadow-md w-[90vw] max-w-md`}>
         <div className="flex items-start">
           <div className="flex-shrink-0 mt-0.5">
             {icon}
           </div>
-          <div className="ml-3 w-0 flex-1">
+          <div className="ml-3 flex-1">
             <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{message}</p>
           </div>
           <div className="ml-4 flex-shrink-0 flex">

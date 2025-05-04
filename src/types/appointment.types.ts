@@ -26,4 +26,5 @@ export type ToastData = {
   show: boolean
   type: "success" | "error" | "info"
   message: string
+  position?: "top" | "bottom"
 }
