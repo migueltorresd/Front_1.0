@@ -11,16 +11,13 @@ const Hero = () => {
           <div>
             <SectionHeader
               title="Misión y visión en la lucha contra el cáncer"
-              description="Somos una organización dedicada a mejorar la calidad de vida de los pacientes con cáncer"
-              align="left"
-            />
-            <p className="text-gray-600 mb-6">
-              Somos una organización dedicada a mejorar la calidad de vida de
+              description="Somos una organización dedicada a mejorar la calidad de vida de
               los pacientes con cáncer y sus familias a través de recursos
               educativos, apoyo emocional y orientación hacia centros
               especializados. Trabajamos con un equipo multidisciplinario de
-              profesionales comprometidos con la lucha contra el cáncer.
-            </p>
+              profesionales comprometidos con la lucha contra el cáncer."
+              align="left"
+            />
             <Button className="bg-orange-600 hover:bg-orange-700">
               Únete a nuestra causa <FaArrowRight className="ml-2" />
             </Button>
