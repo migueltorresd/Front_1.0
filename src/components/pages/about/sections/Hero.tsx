@@ -21,12 +21,12 @@ const Hero = () => {
               especializados. Trabajamos con un equipo multidisciplinario de
               profesionales comprometidos con la lucha contra el cáncer.
             </p>
-            <Button className="bg-green-600 hover:bg-green-700">
+            <Button className="bg-orange-600 hover:bg-orange-700">
               Únete a nuestra causa <FaArrowRight className="ml-2" />
             </Button>
           </div>
           <div className="relative">
-            <div className="bg-green-50 rounded-lg p-3 absolute -left-4 -top-4 w-full h-full"></div>
+            <div className="bg-orange-50 rounded-lg p-3 absolute -left-4 -top-4 w-full h-full"></div>
             <img
               src={staticImages.ABOUT}
               alt="Equipo de profesionales"

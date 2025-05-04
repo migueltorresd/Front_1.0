@@ -63,7 +63,7 @@ const Team = () => {
               </div>
               <CardContent className="p-4">
                 <h3 className="font-semibold text-lg">{member.name}</h3>
-                <p className="text-green-600 mb-2">{member.role}</p>
+                <p className="text-orange-600 mb-2">{member.role}</p>
                 <p className="text-gray-600 text-sm mb-4">{member.bio}</p>
                 <div className="flex space-x-2">
                   <a

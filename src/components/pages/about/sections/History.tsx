@@ -35,7 +35,7 @@ const History = () => {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-gray-50">
+    <section className="py-16 md:py-24 bg-orange-50">
       <div className="container mx-auto max-w-6xl px-4">
         <SectionHeader
           title="Una década dedicada a hacer la diferencia"
@@ -44,7 +44,7 @@ const History = () => {
 
         <div className="relative mt-16">
           {/* Línea de tiempo */}
-          <div className="hidden md:block absolute left-1/2 h-full w-0.5 bg-green-200 transform -translate-x-1/2"></div>
+          <div className="hidden md:block absolute left-1/2 h-full w-0.5 bg-orange-200 transform -translate-x-1/2"></div>
 
           {/* Hitos */}
           <div className="space-y-12">
@@ -61,7 +61,7 @@ const History = () => {
                   }`}
                 >
                   <div className="bg-white p-6 rounded-lg shadow-md inline-block">
-                    <h3 className="text-2xl font-semibold text-green-700 mb-2">
+                    <h3 className="text-2xl font-semibold text-orange-700 mb-2">
                       {milestone.title}
                     </h3>
                     <p className="text-gray-600">{milestone.description}</p>
@@ -69,7 +69,7 @@ const History = () => {
                 </div>
 
                 <div className="relative flex-shrink-0 my-4 md:my-0">
-                  <div className="rounded-full w-16 h-16 flex items-center justify-center bg-green-600 text-white font-bold text-lg z-10 relative">
+                  <div className="rounded-full w-16 h-16 flex items-center justify-center bg-orange-600 text-white font-bold text-lg z-10 relative">
                     {milestone.year}
                   </div>
                 </div>

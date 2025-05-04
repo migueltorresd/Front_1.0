@@ -4,25 +4,25 @@ import { FaHeartbeat, FaHandsHelping, FaBook, FaUsers } from "react-icons/fa";
 const Values = () => {
   const values = [
     {
-      icon: <FaHeartbeat size={32} className="text-green-600" />,
+      icon: <FaHeartbeat size={32} className="text-orange-600" />,
       title: "Compromiso",
       description:
         "Dedicación total al bienestar de los pacientes con cáncer y sus familias en cada paso del camino.",
     },
     {
-      icon: <FaHandsHelping size={32} className="text-green-600" />,
+      icon: <FaHandsHelping size={32} className="text-orange-600" />,
       title: "Solidaridad",
       description:
         "Ayuda mutua y colaboración constante entre todos los miembros de nuestra comunidad.",
     },
     {
-      icon: <FaBook size={32} className="text-green-600" />,
+      icon: <FaBook size={32} className="text-orange-600" />,
       title: "Educación",
       description:
         "Difusión de información precisa y actualizada para empoderar a pacientes y cuidadores.",
     },
     {
-      icon: <FaUsers size={32} className="text-green-600" />,
+      icon: <FaUsers size={32} className="text-orange-600" />,
       title: "Comunidad",
       description:
         "Creación de redes de apoyo para que nadie tenga que enfrentar el cáncer en soledad.",
@@ -30,7 +30,7 @@ const Values = () => {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-green-50">
+    <section className="py-16 md:py-24 bg-orange-50">
       <div className="container mx-auto max-w-6xl px-4">
         <SectionHeader
           title="Principios que guían nuestra labor"
@@ -43,7 +43,7 @@ const Values = () => {
               key={value.title}
               className="bg-white p-6 rounded-lg shadow-sm text-center hover:shadow-md transition-shadow"
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 mb-4">
                 {value.icon}
               </div>
               <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
@@ -55,7 +55,7 @@ const Values = () => {
         <div className="mt-16 bg-white p-8 rounded-lg shadow-sm">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-2xl font-semibold text-green-800 mb-4">
+              <h3 className="text-2xl font-semibold text-orange-800 mb-4">
                 Nuestra Misión
               </h3>
               <p className="text-gray-600">
@@ -67,7 +67,7 @@ const Values = () => {
               </p>
             </div>
             <div>
-              <h3 className="text-2xl font-semibold text-green-800 mb-4">
+              <h3 className="text-2xl font-semibold text-orange-800 mb-4">
                 Nuestra Visión
               </h3>
               <p className="text-gray-600">

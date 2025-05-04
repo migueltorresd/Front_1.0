@@ -11,11 +11,11 @@ const About = () => {
   return (
     <>
       <Hero />
-      <SectionDivider position="top" variant="wave" color="gray-50" />
+      <SectionDivider position="top" variant="wave" color="orange-50" />
       <History />
-      <SectionDivider variant="simple" color="gray-50" />
+      <SectionDivider variant="simple" color="orange-50" />
       <Values />
-      <SectionDivider variant="angle" color="white" />
+      <SectionDivider variant="angle" color="orange-50" />
       <Team />
       <Partners />
     </>

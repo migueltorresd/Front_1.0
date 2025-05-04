@@ -50,7 +50,7 @@ const Partners = () => {
               href={partner.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center p-6 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors h-40"
+              className="flex items-center justify-center p-6 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors h-40"
             >
               <img
                 src={partner.logo}
