@@ -2,10 +2,8 @@ import { useAuthUser } from "@/hooks/useAuthUser";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ROUTES } from "@/lib/routes";
-import { FaUserCircle, FaEdit } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import LoadingSpinner from "@/components/shared/loading-spinner";
 
 export default function Profile() {
@@ -68,70 +66,17 @@ export default function Profile() {
       <div className="bg-white rounded-lg shadow-md p-6 border border-orange-100">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-orange-800">Mi Perfil</h1>
-          {!isEditing && (
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 border-orange-300 text-orange-600"
-              onClick={() => setIsEditing(true)}
-            >
-              <FaEdit /> Editar
-            </Button>
-          )}
         </div>
 
         <div className="flex flex-col items-center mb-6">
-          {isEditing ? (
-            <div className="w-full max-w-md mb-4">
-              <Label htmlFor="photoUrl" className="text-sm text-gray-500 mb-1">
-                URL de la foto de perfil
-              </Label>
-              <Input
-                id="photoUrl"
-                type="text"
-                value={newPhotoURL}
-                onChange={(e) => setNewPhotoURL(e.target.value)}
-                placeholder="URL de la imagen (opcional)"
-                className="mb-4"
-              />
-            </div>
+          {photoURL ? (
+            <img
+              src={photoURL}
+              alt="Foto de perfil"
+              className="w-24 h-24 rounded-full mb-4 border-2 border-orange-300"
+            />
           ) : (
-            <>
-              {photoURL ? (
-                <img
-                  src={photoURL}
-                  alt="Foto de perfil"
-                  className="w-24 h-24 rounded-full mb-4 border-2 border-orange-300"
-                />
-              ) : (
-                <FaUserCircle className="w-24 h-24 text-orange-500 mb-4" />
-              )}
-            </>
-          )}
-
-          {isEditing ? (
-            <div className="w-full max-w-md">
-              <Label
-                htmlFor="displayName"
-                className="text-sm text-gray-500 mb-1"
-              >
-                Nombre de usuario
-              </Label>
-              <Input
-                id="displayName"
-                type="text"
-                value={newDisplayName}
-                onChange={(e) => setNewDisplayName(e.target.value)}
-                placeholder="Nombre de usuario"
-                className="mb-4"
-              />
-            </div>
-          ) : (
-            <>
-              <h1 className="text-2xl font-bold text-orange-800">
-                {displayName || getUsernameFromEmail() || "Usuario"}
-              </h1>
-              <p className="text-gray-600">{email}</p>
-            </>
+            <FaUserCircle className="w-24 h-24 text-orange-500 mb-4" />
           )}
         </div>
 
