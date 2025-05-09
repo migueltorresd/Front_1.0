@@ -10,8 +10,6 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signOut,
-  updateProfile,
-  updateEmail,
 } from "firebase/auth";
 import { auth } from "@/utils/firebase.config";
 
@@ -22,11 +20,6 @@ interface AuthContextType {
   userEmail: string | null;
   googleSignIn: () => Promise<User | null>;
   logout: () => Promise<void>;
-  updateUserProfile: (
-    displayName?: string | null,
-    photoURL?: string | null
-  ) => Promise<void>;
-  updateUserEmail: (email: string) => Promise<void>;
 }
 
 const initialAuthContext: AuthContextType = {
@@ -36,8 +29,6 @@ const initialAuthContext: AuthContextType = {
   userEmail: null,
   googleSignIn: async () => null,
   logout: async () => {},
-  updateUserProfile: async () => {},
-  updateUserEmail: async () => {},
 };
 
 const AuthContext = createContext<AuthContextType>(initialAuthContext);
@@ -83,39 +74,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  // Actualizar perfil de usuario
-  const updateUserProfile = async (
-    displayName?: string | null,
-    photoURL?: string | null
-  ): Promise<void> => {
-    try {
-      if (!currentUser) throw new Error("No hay usuario autenticado");
-
-      await updateProfile(currentUser, {
-        displayName: displayName ?? currentUser.displayName,
-        photoURL: photoURL ?? currentUser.photoURL,
-      });
-
-      // Forzar actualización del estado
-      setCurrentUser({ ...currentUser });
-    } catch (error) {
-      console.error("Error al actualizar el perfil:", error);
-    }
-  };
-
-  // Actualizar email de usuario
-  const updateUserEmail = async (email: string): Promise<void> => {
-    try {
-      if (!currentUser) throw new Error("No hay usuario autenticado");
-      await updateEmail(currentUser, email);
-
-      // Forzar actualización del estado
-      setCurrentUser({ ...currentUser });
-    } catch (error) {
-      console.error("Error al actualizar el email:", error);
-    }
-  };
-
   const value: AuthContextType = {
     currentUser,
     loading,
@@ -123,8 +81,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     userEmail: currentUser?.email || null,
     googleSignIn,
     logout,
-    updateUserProfile,
-    updateUserEmail,
   };
 
   return (

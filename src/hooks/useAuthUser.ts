@@ -25,8 +25,6 @@ export const useAuthUser = () => {
     // Funciones de autenticación
     googleSignIn: auth.googleSignIn,
     logout: auth.logout,
-    updateProfile: auth.updateUserProfile,
-    updateEmail: auth.updateUserEmail,
 
     // Métodos de utilidad
     getUsernameFromEmail: () => {
