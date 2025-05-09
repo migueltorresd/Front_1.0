@@ -6,6 +6,7 @@ export const ROUTES = {
   RESOURCES: "/resources",
   MAP: "/map",
   LOGIN: "/auth/login",
+  PROFILE: "/profile",
   TERMS: "/terms",
   PRIVACY: "/privacy",
   ACCESSIBILITY: "/accessibility",
