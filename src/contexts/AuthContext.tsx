@@ -12,6 +12,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { auth } from "@/utils/firebase.config";
+import { axiosInstance } from "@/lib/axios";
 
 interface AuthContextType {
   currentUser: User | null;
@@ -43,10 +44,51 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Función para crear usuario en el backend
+  const createUserInBackend = async (user: User) => {
+    try {
+      // Obtén el token de autenticación para enviarlo en el header
+      const token = await user.getIdToken();
+
+      // Aquí haces tu petición al backend
+      const response = await axiosInstance.post("/auth/login", {
+        token,
+      });
+
+      if (response.status < 200 || response.status >= 300) {
+        throw new Error("Error al registrar usuario en el backend");
+      }
+
+      const data = response.data;
+      console.log("Usuario registrado en el backend:", data);
+      return data;
+    } catch (error) {
+      console.error("Error al crear usuario en el backend:", error);
+    }
+  };
+
   // Monitorear cambios en el estado de autenticación
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
+
+      // Si hay un usuario autenticado, verificamos si es necesario registrarlo en el backend
+      if (user) {
+        // Aquí puedes implementar alguna lógica para determinar si es la primera vez
+        // Una opción es usar localStorage para guardar un flag
+        const userRegistered = localStorage.getItem(`token`);
+
+        if (!userRegistered) {
+          // Es la primera vez que este usuario se autentica
+          await createUserInBackend(user);
+          // Guardamos en localStorage que ya se ha registrado
+          localStorage.setItem(`token`, await user.getIdToken());
+        }
+      } else {
+        // Si no hay usuario autenticado, eliminamos el token de localStorage
+        localStorage.removeItem(`token`);
+      }
+
       setLoading(false);
     });
 
@@ -69,6 +111,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async (): Promise<void> => {
     try {
       await signOut(auth);
+      localStorage.removeItem(`token`);
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }
