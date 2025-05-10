@@ -21,6 +21,7 @@ interface AuthContextType {
   userEmail: string | null;
   googleSignIn: () => Promise<User | null>;
   logout: () => Promise<void>;
+  checkTokenValidity: () => Promise<boolean>;
 }
 
 const initialAuthContext: AuthContextType = {
@@ -30,6 +31,7 @@ const initialAuthContext: AuthContextType = {
   userEmail: null,
   googleSignIn: async () => null,
   logout: async () => {},
+  checkTokenValidity: async () => false,
 };
 
 const AuthContext = createContext<AuthContextType>(initialAuthContext);
@@ -43,6 +45,25 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Función para verificar si el token está expirado
+  const checkTokenValidity = async (): Promise<boolean> => {
+    if (!currentUser) {
+      return false;
+    }
+
+    try {
+      // Intentamos obtener un nuevo token
+      // Esto forzará a Firebase a verificar si el token actual es válido
+      await currentUser.getIdToken(true);
+      return true;
+    } catch (error) {
+      console.error("Error al validar el token:", error);
+      // Si hay un error, el token probablemente ha expirado o es inválido
+      await logout();
+      return false;
+    }
+  };
 
   // Función para crear usuario en el backend
   const createUserInBackend = async (user: User) => {
@@ -95,6 +116,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return unsubscribe;
   }, []);
 
+  // Verificar la validez del token periódicamente
+  useEffect(() => {
+    if (!currentUser) return;
+
+    // Verificar validez del token cada 5 minutos
+    const tokenCheckInterval = setInterval(
+      () => {
+        checkTokenValidity();
+      },
+      5 * 60 * 1000
+    );
+
+    return () => {
+      clearInterval(tokenCheckInterval);
+    };
+  }, [currentUser]);
+
   // Iniciar sesión con Google
   const googleSignIn = async (): Promise<User | null> => {
     try {
@@ -124,6 +162,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     userEmail: currentUser?.email || null,
     googleSignIn,
     logout,
+    checkTokenValidity,
   };
 
   return (
