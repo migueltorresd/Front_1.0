@@ -2,10 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { FaInfoCircle, FaPaperPlane } from "react-icons/fa";
+import { FaInfoCircle, FaPaperPlane, FaFileAlt } from "react-icons/fa";
 import { FaRobot, FaUser } from "react-icons/fa6";
 import LoadingSpinner from "@/components/shared/loading-spinner";
-import { Message } from "@/types/chatbot.types";
+import { Message, DocumentInfo } from "@/types/chatbot.types";
 import { useAuthUser } from "@/hooks/useAuthUser";
 import { ROUTES } from "@/lib/routes";
 import { axiosInstance } from "@/lib/axios";
@@ -16,6 +16,7 @@ interface ChatInterfaceProps {
   setIsTyping: (typing: boolean) => void;
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  documentInfo?: DocumentInfo | null;
 }
 
 const ChatInterface = ({
@@ -23,6 +24,7 @@ const ChatInterface = ({
   setIsTyping,
   messages,
   setMessages,
+  documentInfo,
 }: ChatInterfaceProps) => {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -72,12 +74,20 @@ const ChatInterface = ({
 
     // Buscar palabras clave en el mensaje del usuario
     const lowercaseInput = input.toLowerCase();
+    let pregunta: string;
+    if (documentInfo) {
+      pregunta = `Response la siguiente pregunta con la informacion del documento ingresado, despues de la pregunta te pasare el texto del documento: \n\n 
+      Pregunta: ${lowercaseInput} \n\n
+      Documento: ${documentInfo.analysis}`;
+    } else {
+      pregunta = lowercaseInput;
+    }
 
     try {
       const response = await axiosInstance.post(
         endpoints.ChatBot.ask,
         {
-          pregunta: lowercaseInput,
+          pregunta,
         },
         {
           headers: {
@@ -115,6 +125,7 @@ const ChatInterface = ({
 
     setIsTyping(false);
   };
+
   return (
     <Card className="border-orange-200 shadow-md overflow-hidden">
       <CardContent className="p-0">
@@ -122,12 +133,22 @@ const ChatInterface = ({
         <div className="bg-orange-50 dark:bg-orange-900/20 p-4 border-b border-orange-100 dark:border-orange-800/30">
           <div className="flex items-start">
             <FaInfoCircle className="h-5 w-5 text-orange-600 dark:text-orange-400 mt-0.5 mr-3 flex-shrink-0" />
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              Este asistente virtual proporciona información general sobre el
-              cáncer. No sustituye el consejo médico profesional. Para
-              emergencias o consultas específicas, contacta a un profesional de
-              la salud.
-            </p>
+            <div>
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                Este asistente virtual proporciona información general sobre el
+                cáncer. No sustituye el consejo médico profesional. Para
+                emergencias o consultas específicas, contacta a un profesional
+                de la salud.
+              </p>
+              {documentInfo && (
+                <div className="flex items-center mt-2 text-sm text-blue-700 dark:text-blue-400">
+                  <FaFileAlt className="h-4 w-4 mr-1" />
+                  <span>
+                    Documento activo: {documentInfo.fileName || "Sin nombre"}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
           {!isAuthenticated && (
             <div className="mt-3 p-2 bg-orange-100 dark:bg-orange-800/30 rounded-md">
@@ -136,7 +157,8 @@ const ChatInterface = ({
               </p>
             </div>
           )}
-        </div>{" "}
+        </div>
+
         {/* Chat Messages */}
         <div
           ref={chatContainerRef}
@@ -219,7 +241,8 @@ const ChatInterface = ({
               <div ref={messagesEndRef} />
             </>
           )}
-        </div>{" "}
+        </div>
+
         {/* Input Area */}
         <div className="border-t border-gray-200 p-4 flex gap-2">
           {isAuthenticated ? (
