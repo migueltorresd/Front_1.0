@@ -5,9 +5,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FaInfoCircle, FaPaperPlane } from "react-icons/fa";
 import { FaRobot, FaUser } from "react-icons/fa6";
 import LoadingSpinner from "@/components/shared/loading-spinner";
-import { Message, simulatedResponses } from "@/types/chatbot.types";
+import { Message } from "@/types/chatbot.types";
 import { useAuthUser } from "@/hooks/useAuthUser";
 import { ROUTES } from "@/lib/routes";
+import { axiosInstance } from "@/lib/axios";
+import { endpoints } from "@/lib/endpoint";
 
 interface ChatInterfaceProps {
   isTyping: boolean;
@@ -40,7 +42,7 @@ const ChatInterface = ({
     }
   }, [messages]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!input.trim()) return;
 
     // Agregar mensaje del usuario
@@ -66,33 +68,52 @@ const ChatInterface = ({
     setInput("");
     setIsTyping(true);
 
-    // Simular respuesta del bot
-    setTimeout(() => {
-      let botResponse = simulatedResponses.default;
+    let botResponse: string;
 
-      // Buscar palabras clave en el mensaje del usuario
-      const lowercaseInput = input.toLowerCase();
-      for (const [keyword, response] of Object.entries(simulatedResponses)) {
-        if (lowercaseInput.includes(keyword)) {
-          botResponse = response;
-          break;
+    // Buscar palabras clave en el mensaje del usuario
+    const lowercaseInput = input.toLowerCase();
+
+    try {
+      const response = await axiosInstance.post(
+        `${endpoints.base}/api/cancer-chatbot/ask`,
+        {
+          pregunta: lowercaseInput,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      }
-
-      // Eliminar el mensaje de carga y añadir la respuesta real
-      setMessages((prev) =>
-        prev
-          .filter((msg) => !msg.isLoading)
-          .concat({
-            id: messages.length + 2,
-            text: botResponse,
-            sender: "bot",
-            timestamp: new Date(),
-          })
       );
 
-      setIsTyping(false);
-    }, 1500);
+      if (response.status < 200 || response.status >= 300) {
+        botResponse = "Lo siento, no tengo una respuesta para eso.";
+      } else {
+        const data = response.data;
+        if (data.respuesta) {
+          botResponse = data.respuesta;
+        } else {
+          botResponse = "Lo siento, no tengo una respuesta para eso.";
+        }
+      }
+    } catch (error) {
+      console.error("Error al enviar mensaje:", error);
+      botResponse = "Lo siento, ha ocurrido un error.";
+    }
+
+    // Eliminar el mensaje de carga y añadir la respuesta real
+    setMessages((prev) =>
+      prev
+        .filter((msg) => !msg.isLoading)
+        .concat({
+          id: messages.length + 2,
+          text: botResponse,
+          sender: "bot",
+          timestamp: new Date(),
+        })
+    );
+
+    setIsTyping(false);
   };
   return (
     <Card className="border-orange-200 shadow-md overflow-hidden">
