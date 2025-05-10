@@ -45,7 +45,7 @@ export default function ChatBot() {
     try {
       // Usar el mismo endpoint que ChatInterface
       const response = await axiosInstance.post(
-        `${endpoints.base}/api/cancer-chatbot/ask`,
+        endpoints.ChatBot.ask,
         {
           pregunta: question.toLowerCase(),
         },

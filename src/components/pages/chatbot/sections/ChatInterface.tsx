@@ -75,7 +75,7 @@ const ChatInterface = ({
 
     try {
       const response = await axiosInstance.post(
-        `${endpoints.base}/api/cancer-chatbot/ask`,
+        endpoints.ChatBot.ask,
         {
           pregunta: lowercaseInput,
         },
