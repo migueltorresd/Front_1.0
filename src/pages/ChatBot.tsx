@@ -121,11 +121,47 @@ export default function ChatBot() {
 
     setMessages((prev) => [...prev, loadingMessage]);
     setIsTyping(true);
-
     try {
       let botResponse: string;
 
-      if (selectedFile && documentInfo) {
+      // Verificar si es la pregunta de ejemplo de markdown
+      if (question === "Muestra un ejemplo con formato markdown") {
+        botResponse = `# Ejemplo de Markdown en el Chatbot
+
+## Información sobre el cáncer
+
+El **cáncer** es un término que abarca un amplio grupo de enfermedades caracterizadas por el *crecimiento anormal de células*.
+
+### Tipos comunes de cáncer:
+* Cáncer de mama
+* Cáncer de pulmón
+* Cáncer colorrectal
+* Melanoma
+
+### Factores de riesgo
+1. Tabaquismo
+2. Exposición a radiación
+3. Ciertos virus e infecciones
+4. Factores genéticos
+
+> Es importante consultar con profesionales médicos para información específica.
+
+Puedes encontrar más información en [Asociación Española Contra el Cáncer](https://www.aecc.es/).
+
+![Símbolo de lucha contra el cáncer](https://via.placeholder.com/150)
+
+\`\`\`
+Recuerda siempre consultar 
+con tu médico
+\`\`\`
+
+| Tipo de Cáncer | Incidencia |
+|--------------- |------------|
+| Mama           | Alta       |
+| Pulmón         | Alta       |
+| Próstata       | Alta       |
+| Piel           | Moderada   |`;
+      } else if (selectedFile && documentInfo) {
         // Procesar el documento con la pregunta
         const processResult = await processDocumentWithPrompt(
           question.toLowerCase()
@@ -261,3 +297,25 @@ export default function ChatBot() {
     </div>
   );
 }
+
+// Función auxiliar para convertir texto con ciertos patrones en markdown
+// Esta función puede ser usada para procesar respuestas del backend
+export const convertToMarkdown = (text: string): string => {
+  if (!text) return "";
+
+  // Convertir listas numeradas: "1. Texto" -> "1. Texto"
+  text = text.replace(/(\d+)\.\s+([^\n]+)/g, "$1. $2");
+
+  // Convertir listas con viñetas: "• Texto" -> "* Texto"
+  text = text.replace(/•\s+([^\n]+)/g, "* $1");
+
+  // Convertir negritas: "texto en negrita" -> "**texto en negrita**"
+  text = text.replace(/"([^"]+)"/g, "**$1**");
+
+  // Convertir enlaces: [texto](url) ya está en formato markdown
+
+  // Convertir secciones en títulos: "Sección:" -> "## Sección"
+  text = text.replace(/^([A-Za-z\s]+):$/gm, "## $1");
+
+  return text;
+};

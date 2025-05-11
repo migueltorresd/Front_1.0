@@ -16,6 +16,7 @@ const SuggestedQuestions = ({
     "¿Qué tratamientos existen para el cáncer?",
     "¿Cómo puedo prevenir el cáncer?",
     "¿Dónde puedo encontrar apoyo emocional?",
+    "Muestra un ejemplo con formato markdown",
   ];
 
   return (

@@ -10,6 +10,12 @@ import { useAuthUser } from "@/hooks/useAuthUser";
 import { ROUTES } from "@/lib/routes";
 import { axiosInstance } from "@/lib/axios";
 import { endpoints } from "@/lib/endpoint";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import { convertToMarkdown } from "@/pages/ChatBot";
+import "./ChatStyles.css";
 
 interface ChatInterfaceProps {
   isTyping: boolean;
@@ -82,9 +88,11 @@ const ChatInterface = ({
         const processResult = await processDocumentWithPrompt(lowercaseInput);
 
         if (processResult) {
-          botResponse =
+          // Aplicar la conversión a Markdown para el análisis del documento
+          botResponse = convertToMarkdown(
             processResult.analysis ||
-            "No pude analizar el documento con esta pregunta.";
+              "No pude analizar el documento con esta pregunta."
+          );
         } else {
           botResponse = "Lo siento, ocurrió un error al procesar el documento.";
         }
@@ -103,7 +111,8 @@ const ChatInterface = ({
         if (response.status >= 200 && response.status < 300) {
           const data = response.data;
           if (data.respuesta) {
-            botResponse = data.respuesta;
+            // Aplicar la conversión a Markdown
+            botResponse = convertToMarkdown(data.respuesta);
           } else {
             botResponse = "Lo siento, no tengo una respuesta para eso.";
           }
@@ -228,7 +237,14 @@ const ChatInterface = ({
                         />
                       ) : (
                         <>
-                          <p>{message.text}</p>
+                          <div className="markdown-content">
+                            <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
+                              rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                            >
+                              {message.text}
+                            </ReactMarkdown>
+                          </div>
                           <p
                             className={`text-xs mt-1 ${message.sender === "user" ? "text-orange-100" : "text-gray-500"}`}
                           >

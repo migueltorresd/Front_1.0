@@ -1,0 +1,129 @@
+/* Estilos para el contenido Markdown en el chat */
+.markdown-content {
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+/* Estilos para elementos de Markdown */
+.markdown-content h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content p {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content a {
+  color: #f97316;
+  text-decoration: underline;
+}
+
+.markdown-content a:hover {
+  text-decoration: none;
+}
+
+.markdown-content code {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  font-family: monospace;
+  padding: 0.1rem 0.2rem;
+}
+
+.markdown-content pre {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  overflow-x: auto;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid #ddd;
+  margin-left: 0;
+  padding-left: 1rem;
+  color: #666;
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.markdown-content table td,
+.markdown-content table th {
+  border: 1px solid #ddd;
+  padding: 6px;
+}
+
+.markdown-content table tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 1rem 0;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Ajustes específicos para mensajes del usuario (fondo naranja) */
+.bg-orange-600 .markdown-content {
+  color: white;
+}
+
+.bg-orange-600 .markdown-content a {
+  color: #fcd34d;
+}
+
+.bg-orange-600 .markdown-content code {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.bg-orange-600 .markdown-content pre {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.bg-orange-600 .markdown-content blockquote {
+  border-left-color: #fcd34d;
+  color: rgba(255, 255, 255, 0.8);
+}
