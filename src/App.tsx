@@ -11,6 +11,8 @@ import ChatBot from "@/pages/ChatBot";
 import Login from "@/pages/Login";
 import Appointment from "@/pages/Appointment";
 import Profile from "@/pages/Profile";
+import Terms from "@/pages/Terms";
+import Privacy from "@/pages/Privacy";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/shared/ProtectedRoute";
 import PublicOnlyRoute from "@/components/shared/PublicOnlyRoute";
@@ -51,6 +53,8 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path={ROUTES.TERMS} element={<Terms />} />
+            <Route path={ROUTES.PRIVACY} element={<Privacy />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

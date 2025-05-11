@@ -125,14 +125,6 @@ export default function Footer() {
                   Política de privacidad
                 </Link>
               </li>
-              <li>
-                <Link
-                  to={ROUTES.ACCESSIBILITY}
-                  className="text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
-                >
-                  Accesibilidad
-                </Link>
-              </li>
             </ul>
           </div>
 

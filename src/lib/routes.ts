@@ -9,5 +9,4 @@ export const ROUTES = {
   PROFILE: "/profile",
   TERMS: "/terms",
   PRIVACY: "/privacy",
-  ACCESSIBILITY: "/accessibility",
 };
