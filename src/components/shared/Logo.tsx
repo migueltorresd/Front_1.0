@@ -39,18 +39,18 @@ export default function Logo({
           <span
             className={cn(
               "font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-800 dark:from-orange-400 dark:to-orange-600",
-              sizeClasses[size],
+              sizeClasses[size]
             )}
           >
-            Cancer
+            A Tu{" "}
           </span>
           <span
             className={cn(
               "font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-700 dark:from-orange-300 dark:to-orange-500",
-              sizeClasses[size],
+              sizeClasses[size]
             )}
           >
-            Care
+            AlCancer
           </span>
         </div>
       )}

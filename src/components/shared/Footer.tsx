@@ -137,7 +137,7 @@ export default function Footer() {
               <li className="flex items-start">
                 <MdEmail className="h-5 w-5 text-orange-600 dark:text-orange-400 mr-2 mt-0.5" />
                 <span className="text-gray-600 dark:text-gray-400">
-                  contacto@cancercare.org
+                  contacto@ATuAlCancer.org
                 </span>
               </li>
               <li className="flex items-start">
@@ -158,7 +158,7 @@ export default function Footer() {
 
         <div className="border-t border-orange-100 dark:border-orange-900/30 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-600 dark:text-gray-400 text-sm">
-            © {new Date().getFullYear()} CancerCare. Todos los derechos
+            © {new Date().getFullYear()} A Tu AlCancer. Todos los derechos
             reservados.
           </p>
           <div className="text-gray-600 dark:text-gray-400 text-sm mt-2 md:mt-0 flex items-center gap-1">
