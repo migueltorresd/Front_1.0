@@ -1,18 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { axiosInstance } from "@/lib/axios";
-import { endpoints } from "@/lib/endpoint";
 import { FaFileUpload, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
-import LoadingSpinner from "@/components/shared/loading-spinner";
-import { DocumentInfo, ResponseAnalizeDocument } from "@/types/chatbot.types";
 
 interface FileUploaderProps {
-  onDocumentProcessed: (documentInfo: DocumentInfo) => void;
+  onDocumentSelected: (file: File) => void;
 }
 
-const FileUploader = ({ onDocumentProcessed }: FileUploaderProps) => {
+const FileUploader = ({ onDocumentSelected }: FileUploaderProps) => {
   const [file, setFile] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<{
     success: boolean;
     message: string;
@@ -31,7 +26,7 @@ const FileUploader = ({ onDocumentProcessed }: FileUploaderProps) => {
     setUploadStatus(null);
   };
 
-  const handleUpload = async () => {
+  const handleUpload = () => {
     if (!file) return;
 
     if (!allowedTypes.includes(file.type)) {
@@ -43,62 +38,15 @@ const FileUploader = ({ onDocumentProcessed }: FileUploaderProps) => {
       return;
     }
 
-    setIsLoading(true);
-    setUploadStatus(null);
+    // Notificar al componente padre que se seleccionó un archivo
+    onDocumentSelected(file);
 
-    try {
-      const formData = new FormData();
-      formData.append("document", file);
-      const response = await axiosInstance.post(
-        endpoints.ChatBot.analyze,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      if (response.status >= 200 && response.status < 300) {
-        setUploadStatus({
-          success: true,
-          message: "Documento procesado correctamente",
-        });
-
-        // Combinar los datos del backend con los datos del cliente
-        const backendData: ResponseAnalizeDocument = response.data;
-
-        // Crear el objeto DocumentInfo
-        const documentInfo: DocumentInfo = {
-          // Datos que vienen del backend
-          analysis: backendData.analysis,
-          analysisType: backendData.analysisType,
-
-          // Datos que se agregan en el cliente
-          documentId: `doc-${Date.now()}`, // Generar un ID único
-          fileName: file.name,
-          fileType: file.type,
-          fileSize: file.size,
-          uploadDate: new Date(),
-        };
-
-        onDocumentProcessed(documentInfo);
-      } else {
-        setUploadStatus({
-          success: false,
-          message: "Error al procesar el documento",
-        });
-      }
-    } catch (error) {
-      console.error("Error al procesar el documento:", error);
-      setUploadStatus({
-        success: false,
-        message: "Error al procesar el documento",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    // Mostrar mensaje de éxito
+    setUploadStatus({
+      success: true,
+      message:
+        "Documento seleccionado correctamente. Ya puedes hacer preguntas sobre su contenido.",
+    });
   };
 
   const resetUpload = () => {
@@ -123,7 +71,6 @@ const FileUploader = ({ onDocumentProcessed }: FileUploaderProps) => {
           className="hidden"
           accept=".pdf,.doc,.docx,.txt"
           onChange={handleFileChange}
-          disabled={isLoading}
         />
         <label
           htmlFor="document-upload"
@@ -148,14 +95,10 @@ const FileUploader = ({ onDocumentProcessed }: FileUploaderProps) => {
 
         <Button
           onClick={handleUpload}
-          disabled={!file || isLoading}
+          disabled={!file}
           className="bg-orange-600 hover:bg-orange-700 transition-colors"
         >
-          {isLoading ? (
-            <LoadingSpinner size="sm" color="white" variant="dots" />
-          ) : (
-            "Procesar"
-          )}
+          Seleccionar
         </Button>
       </div>
 

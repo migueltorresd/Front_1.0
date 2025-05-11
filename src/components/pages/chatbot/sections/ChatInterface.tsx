@@ -17,6 +17,7 @@ interface ChatInterfaceProps {
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   documentInfo?: DocumentInfo | null;
+  processDocumentWithPrompt?: (prompt: string) => Promise<any>;
 }
 
 const ChatInterface = ({
@@ -25,6 +26,7 @@ const ChatInterface = ({
   messages,
   setMessages,
   documentInfo,
+  processDocumentWithPrompt,
 }: ChatInterfaceProps) => {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -69,39 +71,42 @@ const ChatInterface = ({
     setMessages((prev) => [...prev, loadingMessage]);
     setInput("");
     setIsTyping(true);
-
     let botResponse: string;
 
     // Buscar palabras clave en el mensaje del usuario
     const lowercaseInput = input.toLowerCase();
-    let pregunta: string;
-    if (documentInfo) {
-      pregunta = `Response la siguiente pregunta con la informacion del documento ingresado, despues de la pregunta te pasare el texto del documento: \n\n 
-      Pregunta: ${lowercaseInput} \n\n
-      Documento: ${documentInfo.analysis}`;
-    } else {
-      pregunta = lowercaseInput;
-    }
 
     try {
-      const response = await axiosInstance.post(
-        endpoints.ChatBot.ask,
-        {
-          pregunta,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      // Si hay documento y función para procesarlo, utilizarla
+      if (documentInfo && processDocumentWithPrompt) {
+        const processResult = await processDocumentWithPrompt(lowercaseInput);
 
-      if (response.status < 200 || response.status >= 300) {
-        botResponse = "Lo siento, no tengo una respuesta para eso.";
+        if (processResult) {
+          botResponse =
+            processResult.analysis ||
+            "No pude analizar el documento con esta pregunta.";
+        } else {
+          botResponse = "Lo siento, ocurrió un error al procesar el documento.";
+        }
       } else {
-        const data = response.data;
-        if (data.respuesta) {
-          botResponse = data.respuesta;
+        // Sin documento, usar el endpoint normal de preguntas
+        const response = await axiosInstance.post(
+          endpoints.ChatBot.ask,
+          { pregunta: lowercaseInput },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (response.status >= 200 && response.status < 300) {
+          const data = response.data;
+          if (data.respuesta) {
+            botResponse = data.respuesta;
+          } else {
+            botResponse = "Lo siento, no tengo una respuesta para eso.";
+          }
         } else {
           botResponse = "Lo siento, no tengo una respuesta para eso.";
         }

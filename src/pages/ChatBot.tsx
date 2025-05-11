@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { Message, DocumentInfo } from "@/types/chatbot.types";
+import {
+  Message,
+  DocumentInfo,
+  ResponseAnalizeDocument,
+} from "@/types/chatbot.types";
 import {
   Hero,
   ChatInterface,
@@ -12,6 +16,7 @@ import { endpoints } from "@/lib/endpoint";
 export default function ChatBot() {
   const [isTyping, setIsTyping] = useState(false);
   const [documentInfo, setDocumentInfo] = useState<DocumentInfo | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -20,6 +25,78 @@ export default function ChatBot() {
       timestamp: new Date(),
     },
   ]);
+
+  // Función para manejar la selección de un documento
+  const handleDocumentSelected = (file: File) => {
+    setSelectedFile(file);
+
+    // Crear un objeto DocumentInfo preliminar (sin análisis)
+    const preliminaryInfo: DocumentInfo = {
+      analysis: "", // Este campo se llenará cuando se procese
+      analysisType: "",
+      documentId: `doc-${Date.now()}`,
+      fileName: file.name,
+      fileType: file.type,
+      fileSize: file.size,
+      uploadDate: new Date(),
+    };
+
+    setDocumentInfo(preliminaryInfo);
+
+    // Notificar al usuario que el documento ha sido seleccionado
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: messages.length + 1,
+        text: `He seleccionado tu documento "${file.name}". Puedes hacer preguntas sobre su contenido y lo analizaré.`,
+        sender: "bot",
+        timestamp: new Date(),
+      },
+    ]);
+  };
+
+  // Función para procesar el documento con una pregunta
+  const processDocumentWithPrompt = async (prompt: string) => {
+    if (!selectedFile) return null;
+
+    try {
+      const formData = new FormData();
+      formData.append("document", selectedFile);
+      formData.append("customPrompt", prompt);
+
+      const response = await axiosInstance.post(
+        endpoints.ChatBot.analyze,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.status >= 200 && response.status < 300) {
+        const backendData: ResponseAnalizeDocument = response.data;
+
+        // Actualizar el DocumentInfo con los datos del análisis
+        if (documentInfo) {
+          const updatedDocInfo: DocumentInfo = {
+            ...documentInfo,
+            analysis: backendData.analysis,
+            analysisType: backendData.analysisType,
+          };
+
+          setDocumentInfo(updatedDocInfo);
+        }
+
+        return backendData;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error al procesar el documento con la pregunta:", error);
+      return null;
+    }
+  };
 
   // Función para simular una pregunta sugerida
   const simulateQuestion = async (question: string) => {
@@ -46,28 +123,39 @@ export default function ChatBot() {
     setIsTyping(true);
 
     try {
-      // Usar el mismo endpoint que ChatInterface
-      const response = await axiosInstance.post(
-        endpoints.ChatBot.ask,
-        {
-          pregunta: question.toLowerCase(),
-          documento: documentInfo, // Enviar info del documento si existe
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
       let botResponse: string;
 
-      if (response.status < 200 || response.status >= 300) {
-        botResponse = "Lo siento, no tengo una respuesta para eso.";
+      if (selectedFile && documentInfo) {
+        // Procesar el documento con la pregunta
+        const processResult = await processDocumentWithPrompt(
+          question.toLowerCase()
+        );
+
+        if (processResult) {
+          botResponse =
+            processResult.analysis ||
+            "No se pudo analizar el documento con esta pregunta.";
+        } else {
+          botResponse = "Lo siento, ocurrió un error al analizar el documento.";
+        }
       } else {
-        const data = response.data;
-        if (data.respuesta) {
-          botResponse = data.respuesta;
+        // Usar el endpoint normal sin documento
+        const response = await axiosInstance.post(
+          endpoints.ChatBot.ask,
+          { pregunta: question.toLowerCase() },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (
+          response.status >= 200 &&
+          response.status < 300 &&
+          response.data.respuesta
+        ) {
+          botResponse = response.data.respuesta;
         } else {
           botResponse = "Lo siento, no tengo una respuesta para eso.";
         }
@@ -85,7 +173,7 @@ export default function ChatBot() {
           })
       );
     } catch (error) {
-      console.error("Error al enviar mensaje sugerido:", error);
+      console.error("Error al procesar la consulta:", error);
 
       // Eliminar el mensaje de carga y añadir mensaje de error
       setMessages((prev) =>
@@ -102,25 +190,11 @@ export default function ChatBot() {
       setIsTyping(false);
     }
   };
-  // Función para manejar el procesamiento del documento
-  const handleDocumentProcessed = (docInfo: DocumentInfo) => {
-    setDocumentInfo(docInfo);
-
-    // Notificar al usuario que el documento ha sido procesado
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: messages.length + 1,
-        text: `He procesado tu documento "${docInfo.fileName || "subido"}". Ahora puedes hacer preguntas sobre su contenido.`,
-        sender: "bot",
-        timestamp: new Date(),
-      },
-    ]);
-  };
 
   // Función para limpiar la información del documento
   const clearDocumentInfo = () => {
     setDocumentInfo(null);
+    setSelectedFile(null);
 
     // Notificar al usuario que el documento ha sido eliminado
     setMessages((prev) => [
@@ -141,7 +215,7 @@ export default function ChatBot() {
 
       {/* Cargador de documentos */}
       <div className="mt-6">
-        <FileUploader onDocumentProcessed={handleDocumentProcessed} />
+        <FileUploader onDocumentSelected={handleDocumentSelected} />
       </div>
 
       {/* Indicador de documento activo */}
@@ -174,6 +248,7 @@ export default function ChatBot() {
           messages={messages}
           setMessages={setMessages}
           documentInfo={documentInfo}
+          processDocumentWithPrompt={processDocumentWithPrompt}
         />
       </div>
 
