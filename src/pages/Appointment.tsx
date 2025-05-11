@@ -1,16 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Breadcrumb from "@/components/ui/breadcrumb";
 import SectionHeader from "@/components/shared/Section-Header";
 import FeedbackToast from "@/components/ui/feedback-toast";
-import { CalendarSection, NewAppointmentForm, AppointmentSuccess } from "@/components/pages/appointment/sections";
-import { FormData, Appointment as AppointmentType, ToastData } from "@/types/appointment.types";
+import {
+  CalendarSection,
+  NewAppointmentForm,
+  AppointmentSuccess,
+} from "@/components/pages/appointment/sections";
+import {
+  FormData,
+  Appointment as AppointmentType,
+  ToastData,
+} from "@/types/appointment.types";
 import { mockAppointments } from "@/constants/mock-appointments";
+import {
+  saveAppointmentsToLocalStorage,
+  getAppointmentsFromLocalStorage,
+} from "@/utils/localStorage";
 
 const Appointment = () => {
   const [activeTab, setActiveTab] = useState("calendar");
-  const [appointments, setAppointments] = useState<AppointmentType[]>(mockAppointments);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [appointments, setAppointments] = useState<AppointmentType[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    new Date()
+  );
+
+  // Cargar los recordatorios de citas desde localStorage al iniciar
+  useEffect(() => {
+    const storedAppointments = getAppointmentsFromLocalStorage();
+    // Si no hay citas guardadas localmente, usar los datos de ejemplo
+    setAppointments(
+      storedAppointments.length > 0 ? storedAppointments : mockAppointments
+    );
+  }, []);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -23,7 +46,9 @@ const Appointment = () => {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>(
+    {}
+  );
   const [toast, setToast] = useState<ToastData>({
     show: false,
     type: "info",
@@ -69,21 +94,27 @@ const Appointment = () => {
       // Simular envío al servidor
       setTimeout(() => {
         // Agregar el nuevo recordatorio al estado
-        setAppointments((prev) => [...prev, newAppointment]);
+        const updatedAppointments = [...appointments, newAppointment];
+        setAppointments(updatedAppointments);
+
+        // Guardar los recordatorios actualizados en localStorage
+        saveAppointmentsToLocalStorage(updatedAppointments);
+
         setIsSubmitting(false);
-        
+
         // Reiniciar los datos del formulario pero mantener una copia para mostrarla
         const submittedData = { ...formData };
         handleReset();
-        
+
         // Mostrar toast de éxito
         setToast({
           show: true,
           type: "success",
-          message: "¡Recordatorio de cita guardado con éxito! Te lo recordaremos antes de la fecha.",
-          position: "bottom"
+          message:
+            "¡Recordatorio de cita guardado con éxito en tu dispositivo! Podrás consultarlo en cualquier momento.",
+          position: "bottom",
         });
-        
+
         // Establecer los datos para la pantalla de éxito
         setFormData(submittedData);
         setIsSubmitted(true);
@@ -94,9 +125,30 @@ const Appointment = () => {
         show: true,
         type: "error",
         message: "Por favor, completa todos los campos requeridos.",
-        position: "bottom"
+        position: "bottom",
       });
     }
+  };
+
+  const handleDeleteAppointment = (id: string) => {
+    // Filtrar las citas para eliminar la que tiene el ID especificado
+    const updatedAppointments = appointments.filter(
+      (appointment) => appointment.id !== id
+    );
+
+    // Actualizar el estado
+    setAppointments(updatedAppointments);
+
+    // Actualizar localStorage
+    saveAppointmentsToLocalStorage(updatedAppointments);
+
+    // Mostrar mensaje de confirmación
+    setToast({
+      show: true,
+      type: "info",
+      message: "Recordatorio de cita eliminado correctamente",
+      position: "bottom",
+    });
   };
 
   const handleReset = () => {
@@ -126,10 +178,10 @@ const Appointment = () => {
   if (isSubmitted) {
     return (
       <>
-        <AppointmentSuccess 
-          formData={formData} 
-          onReset={handleReset} 
-          onViewCalendar={handleViewCalendar} 
+        <AppointmentSuccess
+          formData={formData}
+          onReset={handleReset}
+          onViewCalendar={handleViewCalendar}
         />
         {toast.show && (
           <FeedbackToast
@@ -146,13 +198,11 @@ const Appointment = () => {
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8">
-      <Breadcrumb />
-
+      <Breadcrumb />{" "}
       <SectionHeader
         title="Mis Recordatorios de Citas"
-        description="Guarda recordatorios de tus citas médicas y tratamientos para no olvidarlos"
+        description="Guarda recordatorios de tus citas médicas y tratamientos para no olvidarlos. Todos los datos se guardan localmente en tu dispositivo."
       />
-
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
         <TabsList className="grid grid-cols-2 max-w-md mx-auto bg-orange-100/50 dark:bg-orange-900/20 p-1 rounded-full">
           <TabsTrigger
@@ -170,10 +220,12 @@ const Appointment = () => {
         </TabsList>
 
         <TabsContent value="calendar" className="mt-6">
+          {" "}
           <CalendarSection
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             appointments={appointments}
+            onDeleteAppointment={handleDeleteAppointment}
           />
         </TabsContent>
 
@@ -188,7 +240,6 @@ const Appointment = () => {
           />
         </TabsContent>
       </Tabs>
-
       {/* Toast de feedback */}
       {toast.show && (
         <FeedbackToast

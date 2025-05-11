@@ -1,9 +1,22 @@
 import React from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { FaCalendarAlt, FaClock, FaBell, FaEnvelope } from "react-icons/fa";
+import {
+  FaCalendarAlt,
+  FaClock,
+  FaBell,
+  FaTrash,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
 import { Badge } from "@/components/ui/badge";
-import { FuturisticCard, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/ui-card";
+import { Button } from "@/components/ui/button";
+import {
+  FuturisticCard,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/ui-card";
 import { Appointment } from "@/types/appointment.types";
 import { CustomCalendar } from "@/components/ui/custom-calendar";
 
@@ -11,12 +24,14 @@ type CalendarSectionProps = {
   selectedDate: Date | undefined;
   setSelectedDate: (date: Date | undefined) => void;
   appointments: Appointment[];
+  onDeleteAppointment?: (id: string) => void;
 };
 
 const CalendarSection: React.FC<CalendarSectionProps> = ({
   selectedDate,
   setSelectedDate,
   appointments,
+  onDeleteAppointment,
 }) => {
   // Obtener las citas para la fecha seleccionada
   const appointmentsForSelectedDate = selectedDate
@@ -30,7 +45,10 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
 
   // Obtener las próximas citas (ordenadas por fecha)
   const upcomingAppointments = [...appointments]
-    .filter((appointment) => appointment.status !== "cancelled" && appointment.status !== "completed")
+    .filter(
+      (appointment) =>
+        appointment.status !== "cancelled" && appointment.status !== "completed"
+    )
     .sort((a, b) => {
       const dateA = new Date(`${format(a.date, "yyyy-MM-dd")}T${a.time}`);
       const dateB = new Date(`${format(b.date, "yyyy-MM-dd")}T${b.time}`);
@@ -80,8 +98,11 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
       {/* Calendario */}
       <FuturisticCard gradient hover className="lg:col-span-2 shadow-md">
         <CardHeader>
-          <CardTitle>Tu Calendario de Citas</CardTitle>
-          <CardDescription>Visualiza y gestiona tus citas médicas</CardDescription>
+          {" "}
+          <CardTitle>Tu Calendario de Recordatorios</CardTitle>
+          <CardDescription>
+            Visualiza y gestiona tus recordatorios de citas médicas
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -105,10 +126,9 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
             <div>
               <h3 className="text-lg font-medium mb-4 text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-700 dark:from-orange-400 dark:to-orange-500">
                 {selectedDate
-                  ? `Citas para ${format(selectedDate, "PPP", { locale: es })}`
+                  ? `Recordatorios para ${format(selectedDate, "PPP", { locale: es })}`
                   : "Selecciona una fecha"}
-              </h3>
-
+              </h3>{" "}
               {appointmentsForSelectedDate.length > 0 ? (
                 <div className="space-y-4">
                   {appointmentsForSelectedDate.map((appointment) => (
@@ -117,24 +137,46 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
                       className="p-4 rounded-xl border border-orange-100/50 dark:border-orange-900/30 bg-gradient-to-br from-white to-orange-50/80 dark:from-gray-900 dark:to-gray-800/80 backdrop-blur-sm hover:shadow-md transition-all duration-300"
                     >
                       <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium">{appointment.specialistType}</h4>
-                        <Badge className={`${getStatusBadgeColor(appointment.status)}`}>
-                          {getStatusText(appointment.status)}
-                        </Badge>
+                        <h4 className="font-medium">
+                          {appointment.specialistType}
+                        </h4>
+                        <div className="flex items-center space-x-2">
+                          <Badge
+                            className={`${getStatusBadgeColor(appointment.status)}`}
+                          >
+                            {getStatusText(appointment.status)}
+                          </Badge>
+
+                          {onDeleteAppointment && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-100/50 rounded-full"
+                              onClick={() =>
+                                onDeleteAppointment(appointment.id)
+                              }
+                              title="Eliminar recordatorio"
+                            >
+                              <FaTrash className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
                       </div>
                       <div className="text-sm space-y-1">
                         <div className="flex items-center">
                           <FaClock className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
                           <span>{appointment.time}</span>
-                        </div>
+                        </div>{" "}
                         {appointment.location && (
                           <div className="flex items-center">
-                            <FaCalendarAlt className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
+                            <FaMapMarkerAlt className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
                             <span>{appointment.location}</span>
                           </div>
                         )}
                         {appointment.notes && (
-                          <p className="text-gray-600 dark:text-gray-300 mt-2">{appointment.notes}</p>
+                          <p className="text-gray-600 dark:text-gray-300 mt-2">
+                            {appointment.notes}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -142,7 +184,10 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
                 </div>
               ) : (
                 <div className="text-center py-8 bg-gradient-to-br from-white to-orange-50/80 dark:from-gray-900 dark:to-gray-800/80 rounded-xl border border-orange-100/50 dark:border-orange-900/30 backdrop-blur-sm">
-                  <p className="text-gray-500 dark:text-gray-400">No tienes citas para esta fecha</p>
+                  {" "}
+                  <p className="text-gray-500 dark:text-gray-400">
+                    No tienes recordatorios para esta fecha
+                  </p>
                 </div>
               )}
             </div>
@@ -153,8 +198,11 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
       {/* Próximas citas */}
       <FuturisticCard gradient hover className="shadow-md">
         <CardHeader>
-          <CardTitle>Próximas Citas</CardTitle>
-          <CardDescription>Recibirás recordatorios por correo</CardDescription>
+          {" "}
+          <CardTitle>Próximos Recordatorios</CardTitle>
+          <CardDescription>
+            Guardados localmente en tu dispositivo
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {upcomingAppointments.length > 0 ? (
@@ -165,15 +213,35 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
                   className="p-4 rounded-xl border border-orange-100/50 dark:border-orange-900/30 bg-gradient-to-br from-white to-orange-50/80 dark:from-gray-900 dark:to-gray-800/80 backdrop-blur-sm hover:shadow-md transition-all duration-300"
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-medium">{appointment.specialistType}</h4>
-                    <Badge className={`${getStatusBadgeColor(appointment.status)}`}>
-                      {getStatusText(appointment.status)}
-                    </Badge>
+                    <h4 className="font-medium">
+                      {appointment.specialistType}
+                    </h4>
+                    <div className="flex items-center space-x-2">
+                      <Badge
+                        className={`${getStatusBadgeColor(appointment.status)}`}
+                      >
+                        {getStatusText(appointment.status)}
+                      </Badge>
+
+                      {onDeleteAppointment && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-100/50 rounded-full"
+                          onClick={() => onDeleteAppointment(appointment.id)}
+                          title="Eliminar recordatorio"
+                        >
+                          <FaTrash className="h-3 w-3" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                   <div className="text-sm space-y-1">
                     <div className="flex items-center">
                       <FaCalendarAlt className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
-                      <span>{format(appointment.date, "PPP", { locale: es })}</span>
+                      <span>
+                        {format(appointment.date, "PPP", { locale: es })}
+                      </span>
                     </div>
                     <div className="flex items-center">
                       <FaClock className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
@@ -192,20 +260,22 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
                     </div>
                   </div>
                   <div>
+                    {" "}
                     <p className="text-sm text-orange-800 dark:text-orange-200">
-                      Recibirás recordatorios por correo electrónico 24 horas antes de cada cita.
+                      Tus recordatorios se guardan localmente en este
+                      dispositivo y no se perderán al cerrar el navegador o
+                      reiniciar tu equipo.
                     </p>
-                    <div className="flex items-center mt-2 text-xs text-orange-600 dark:text-orange-400">
-                      <FaEnvelope className="h-3 w-3 mr-1" />
-                      <span>ejemplo@correo.com</span>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
           ) : (
             <div className="text-center py-8 bg-gradient-to-br from-white to-orange-50/80 dark:from-gray-900 dark:to-gray-800/80 rounded-xl border border-orange-100/50 dark:border-orange-900/30 backdrop-blur-sm">
-              <p className="text-gray-500 dark:text-gray-400">No tienes citas programadas</p>
+              {" "}
+              <p className="text-gray-500 dark:text-gray-400">
+                No tienes recordatorios programados
+              </p>
             </div>
           )}
         </CardContent>

@@ -4,10 +4,27 @@ import { FaCalendarAlt, FaInfoCircle } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { FuturisticCard, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/ui-card";
+import {
+  FuturisticCard,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/ui-card";
 import LoadingSpinner from "@/components/shared/loading-spinner";
 import { FormData } from "@/types/appointment.types";
 
@@ -39,16 +56,43 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({
     "Terapia nutricional",
     "Medicación",
     "Cirugía",
-    "Otro tratamiento"
+    "Otro tratamiento",
   ];
 
   const timeSlots = [
-    "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-    "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30",
-    "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30"
+    "07:00",
+    "07:30",
+    "08:00",
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+    "18:30",
+    "19:00",
+    "19:30",
+    "20:00",
+    "20:30",
   ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -65,21 +109,29 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({
     <FuturisticCard gradient hover className="shadow-md">
       <form onSubmit={onSubmit}>
         <CardHeader>
+          {" "}
           <CardTitle>Nuevo Recordatorio de Cita</CardTitle>
-          <CardDescription>Registra tus próximas citas médicas para recibir recordatorios</CardDescription>
+          <CardDescription>
+            Registra tus próximas citas médicas en este dispositivo
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Información sobre el formulario */}
-          <div className="p-4 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-200/50 dark:border-orange-800/30">
+          {/* Información sobre el formulario */}{" "}
+          <div className="p-4 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/20 dark:to-orange-800/10 border border-orange-200/50 dark:border-orange-800/30 shadow-sm">
             <div className="flex items-start">
               <FaInfoCircle className="h-5 w-5 text-orange-600 dark:text-orange-400 mt-0.5 mr-3 flex-shrink-0" />
-              <p className="text-sm text-gray-700 dark:text-gray-300">
-                Registra tus próximas citas o tratamientos y te enviaremos recordatorios para que no los olvides.
-                Por ejemplo: "Tengo quimioterapia el 26 de marzo a las 10:00".
-              </p>
+              <div>
+                <p className="text-sm font-medium text-orange-800 dark:text-orange-300 mb-1">
+                  Recordatorios de citas locales
+                </p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  Registra tus próximas citas o tratamientos médicos. Todos los
+                  datos se guardan localmente en tu dispositivo. Por ejemplo:
+                  "Tengo quimioterapia el 26 de marzo a las 10:00".
+                </p>
+              </div>
             </div>
           </div>
-
           {/* Tipo de cita */}
           <div className="space-y-2">
             <Label htmlFor="specialistType">
@@ -87,7 +139,9 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({
             </Label>
             <Select
               value={formData.specialistType}
-              onValueChange={(value) => handleSelectChange("specialistType", value)}
+              onValueChange={(value) =>
+                handleSelectChange("specialistType", value)
+              }
             >
               <SelectTrigger
                 id="specialistType"
@@ -105,9 +159,10 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({
                 ))}
               </SelectContent>
             </Select>
-            {errors.specialistType && <p className="text-sm text-red-500">{errors.specialistType}</p>}
+            {errors.specialistType && (
+              <p className="text-sm text-red-500">{errors.specialistType}</p>
+            )}
           </div>
-
           {/* Fecha y Hora */}
           <div>
             <h3 className="text-lg font-medium mb-4 text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-700 dark:from-orange-400 dark:to-orange-500">
@@ -134,29 +189,35 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({
                       )}
                     </Button>
                   </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-orange-100/50 dark:border-orange-900/30 rounded-lg">
-                      <Calendar
-                        mode="single"
-                        selected={formData.date}
-                        onSelect={handleDateChange}
-                        locale={es}
-                        disabled={(date) => {
-                          const today = new Date();
-                          return date < today || date.getDay() === 0;
-                        }}
-                        className="rounded-lg"
-                        classNames={{
-                          month_caption: "flex items-center justify-between px-4 py-2",
-                          caption: "flex items-center justify-center pt-1 relative",
-                          caption_label: "text-sm font-medium text-orange-700 dark:text-orange-300",
-                          nav: "absolute top-3 right-1 flex gap-2 items-center space-x-1 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/30 rounded-lg p-1.5 shadow-sm",
-                          nav_button: "h-7 w-7 bg-white/70 dark:bg-gray-800/50 hover:bg-orange-200 dark:hover:bg-orange-700/40 rounded-md flex items-center justify-center transition-colors duration-200 border border-orange-100/50 dark:border-orange-800/30 cursor-pointer",
-                          disabled: "opacity-50 cursor-not-allowed",
-                        }}
-                      />
-                    </PopoverContent>
+                  <PopoverContent className="w-auto p-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-orange-100/50 dark:border-orange-900/30 rounded-lg">
+                    <Calendar
+                      mode="single"
+                      selected={formData.date}
+                      onSelect={handleDateChange}
+                      locale={es}
+                      disabled={(date) => {
+                        const today = new Date();
+                        return date < today || date.getDay() === 0;
+                      }}
+                      className="rounded-lg"
+                      classNames={{
+                        month_caption:
+                          "flex items-center justify-between px-4 py-2",
+                        caption:
+                          "flex items-center justify-center pt-1 relative",
+                        caption_label:
+                          "text-sm font-medium text-orange-700 dark:text-orange-300",
+                        nav: "absolute top-3 right-1 flex gap-2 items-center space-x-1 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/30 rounded-lg p-1.5 shadow-sm",
+                        nav_button:
+                          "h-7 w-7 bg-white/70 dark:bg-gray-800/50 hover:bg-orange-200 dark:hover:bg-orange-700/40 rounded-md flex items-center justify-center transition-colors duration-200 border border-orange-100/50 dark:border-orange-800/30 cursor-pointer",
+                        disabled: "opacity-50 cursor-not-allowed",
+                      }}
+                    />
+                  </PopoverContent>
                 </Popover>
-                {errors.date && <p className="text-sm text-red-500">{errors.date}</p>}
+                {errors.date && (
+                  <p className="text-sm text-red-500">{errors.date}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="time">
@@ -183,11 +244,12 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.time && <p className="text-sm text-red-500">{errors.time}</p>}
+                {errors.time && (
+                  <p className="text-sm text-red-500">{errors.time}</p>
+                )}
               </div>
             </div>
           </div>
-
           {/* Lugar (opcional) */}
           <div className="space-y-2">
             <Label htmlFor="location">Lugar (opcional)</Label>
@@ -199,7 +261,6 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({
               className="rounded-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border-orange-100/50 dark:border-orange-900/30 focus:border-orange-500 focus:ring-orange-500"
             />
           </div>
-
           {/* Notas adicionales */}
           <div className="space-y-2">
             <Label htmlFor="notes">Notas adicionales (opcional)</Label>
@@ -213,12 +274,15 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({
               className="w-full min-h-[100px] rounded-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-orange-100/50 dark:border-orange-900/30 focus:border-orange-500 focus:ring-orange-500 px-3 py-2 text-sm"
             />
           </div>
-
-          {/* Notificaciones */}
+          {/* Notificaciones */}{" "}
           <div className="p-4 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20 border border-orange-200/50 dark:border-orange-800/30 backdrop-blur-sm">
-            <h3 className="font-medium text-orange-800 dark:text-orange-300 mb-2">Recordatorios automáticos</h3>
+            <h3 className="font-medium text-orange-800 dark:text-orange-300 mb-2">
+              Almacenamiento local
+            </h3>
             <p className="text-sm text-orange-700 dark:text-orange-400">
-              Recibirás recordatorios por correo electrónico un día antes y 2 horas antes de tu cita para ayudarte a estar preparado.
+              Los recordatorios se guardan localmente en tu dispositivo. Podrás
+              consultarlos en cualquier momento, incluso si cierras el navegador
+              o apagas tu dispositivo.
             </p>
           </div>
         </CardContent>

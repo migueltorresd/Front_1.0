@@ -3,7 +3,14 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { FaCalendarCheck, FaClock, FaNotesMedical } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { FuturisticCard, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/ui-card";
+import {
+  FuturisticCard,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/ui-card";
 import { FormData } from "@/types/appointment.types";
 
 type AppointmentSuccessProps = {
@@ -12,7 +19,11 @@ type AppointmentSuccessProps = {
   onViewCalendar: () => void;
 };
 
-const AppointmentSuccess: React.FC<AppointmentSuccessProps> = ({ formData, onReset, onViewCalendar }) => {
+const AppointmentSuccess: React.FC<AppointmentSuccessProps> = ({
+  formData,
+  onReset,
+  onViewCalendar,
+}) => {
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="text-center mb-8">
@@ -30,7 +41,9 @@ const AppointmentSuccess: React.FC<AppointmentSuccessProps> = ({ formData, onRes
       <FuturisticCard gradient className="shadow-lg mb-6">
         <CardHeader>
           <CardTitle>Detalles del recordatorio</CardTitle>
-          <CardDescription>Resumen de la cita que has registrado</CardDescription>
+          <CardDescription>
+            Resumen de la cita que has registrado
+          </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
           <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20 rounded-xl p-4 border border-orange-200/50 dark:border-orange-800/30 backdrop-blur-sm">
@@ -40,41 +53,58 @@ const AppointmentSuccess: React.FC<AppointmentSuccessProps> = ({ formData, onRes
                   <FaCalendarCheck className="h-5 w-5 text-orange-500 dark:text-orange-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Tipo de cita/tratamiento</p>
-                  <p className="font-medium text-lg text-orange-800 dark:text-orange-300">{formData.specialistType}</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Tipo de cita/tratamiento
+                  </p>
+                  <p className="font-medium text-lg text-orange-800 dark:text-orange-300">
+                    {formData.specialistType}
+                  </p>
                 </div>
               </div>
-              
+
               <div className="w-full md:w-1/2 flex items-start space-x-4 px-2">
                 <div className="rounded-full bg-white/70 dark:bg-gray-800/70 p-2 shadow-sm">
                   <FaClock className="h-5 w-5 text-orange-500 dark:text-orange-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Fecha y hora</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Fecha y hora
+                  </p>
                   <p className="font-medium text-lg text-orange-800 dark:text-orange-300">
-                    {formData.date && format(formData.date, "PPP", { locale: es })} - {formData.time}
+                    {formData.date &&
+                      format(formData.date, "PPP", { locale: es })}{" "}
+                    - {formData.time}
                   </p>
                 </div>
               </div>
-              
+
               {formData.notes && (
                 <div className="w-full flex items-start space-x-4 mt-2 px-2">
                   <div className="rounded-full bg-white/70 dark:bg-gray-800/70 p-2 shadow-sm flex-shrink-0">
                     <FaNotesMedical className="h-5 w-5 text-orange-500 dark:text-orange-400" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Notas adicionales</p>
-                    <p className="font-medium text-orange-800 dark:text-orange-300">{formData.notes}</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      Notas adicionales
+                    </p>
+                    <p className="font-medium text-orange-800 dark:text-orange-300">
+                      {formData.notes}
+                    </p>
                   </div>
                 </div>
               )}
             </div>
           </div>
-          
+
           <div className="p-4 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-200/50 dark:border-orange-800/30">
-            <h3 className="font-medium text-orange-800 dark:text-orange-300 mb-2">¿Qué sigue?</h3>
+            {" "}
+            <h3 className="font-medium text-orange-800 dark:text-orange-300 mb-2">
+              ¿Qué sigue?
+            </h3>
             <p className="text-sm text-orange-700 dark:text-orange-400">
-              Te enviaremos recordatorios por correo electrónico un día antes y 2 horas antes de tu cita para que estés preparado y no la olvides.
+              Tu recordatorio se ha guardado localmente en este dispositivo.
+              Puedes consultarlo en cualquier momento en la sección "Mi
+              Calendario", incluso si cierras el navegador.
             </p>
           </div>
         </CardContent>
